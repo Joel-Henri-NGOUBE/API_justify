@@ -22,16 +22,16 @@ app.post("/", (req, res) => {
             res.header("Location","/insert").status(302).end()
         }
         console.log("Connectez-vous")
-        res.end()
+        res.header("Location","/").status(302).end()
 })
 
 
-// Définition des routes de l'API
 app.get("/insert", (req, res) => {
     res.sendFile("./insertion.html", { root: __dirname})
     // res.end()
 })
 
+// Définition des routes de l'API
 // Définir la route pour le traitement du formulaire
 app.post("/api/:chemin", (req, res) => {
     if(req.params.chemin === "justify"){
