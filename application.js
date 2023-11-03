@@ -1,6 +1,12 @@
 // Importation d'express.js pour faciliter l'implémentation du serveur.
 const express = require("express")
 
+// Importation du générateur d'ID
+const uuid = require("uuid")
+
+// Importation du gestionnaire de fichiers
+const fs = require("fs")
+
 const app = express()
 
 // Transformer le corps de la requête en json
@@ -16,13 +22,59 @@ app.get("/",(req,res) => {
 })
 
 app.post("/", (req, res) => {
-        if(req.body.email){
-            // Génération de token
-            // Redirection vers la page d'insertion
-            res.header("Location","/insert").status(302).end()
+    if(req.body.email){
+        if(fs.existsSync("./database.json")){
+            // Lecture deu fichier de base de données
+            fs.readFile("./database.json",(error,data) => {
+                // Conversion des données en objets manipulables par JavaScript
+                data = JSON.parse(data)
+                if(error){
+                    console.log(error)
+                }
+                else{
+                    let i = 0
+                    data.forEach((user) => {
+                        if(user.email === req.body.email){
+                            i++
+                        }
+                    })
+                    // Si un adresse mail en base correspond à celle entrée, faire une modification du token
+                    if(i){
+                    data.forEach((user) => {
+                        if(user.email === req.body.email){
+                            user.token = uuid.v4()
+                        }
+                    })
+                    }
+                    // Sinon, ajouter un nouvel utilisateur à la base de données
+                    else{
+                        // Génération d'un token associé à un identifiant d'utilisateur
+                        let newData = {
+                            "email" : req.body.email,
+                            "token" : uuid.v4(),
+                            "words" : 0
+                        }
+                        data.push(newData)
+                        console.log(data)
+                    }
+                    // Convertion en chaîne de caractères le contenu du fichier et l'insérer dans la base de données
+                    fs.writeFile("./database.json", JSON.stringify(data), (error) => {
+                        console.log(error)
+                    })
+                }
+            })
         }
+        
+        // Redirection vers la page d'insertion
+        res.header("Location","/insert").status(302)
+        res.end()
+    }
+    else{
+        // else
         console.log("Connectez-vous")
-        res.header("Location","/").status(302).end()
+        res.header("Location","/").status(302)
+        res.end()
+    }
 })
 
 
