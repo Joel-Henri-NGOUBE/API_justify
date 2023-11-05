@@ -17,11 +17,11 @@ app.use(express.urlencoded())
 
 // Définition des chemins de d'authentification 
 
-app.get("/",(req,res) => {
+app.get("/api",(req,res) => {
     res.sendFile("./authenticate.html", { root: __dirname})
 })
 
-app.post("/", (req, res) => {
+app.post("/api", (req, res) => {
     if(req.body.email){
         if(fs.existsSync("./database.json")){
             // Lecture deu fichier de base de données
@@ -77,15 +77,26 @@ app.post("/", (req, res) => {
     }
 })
 
+// Implémentation du middleware de vérification de token
+app.use((req,res,next) => {
+    // Potentiellement vérifier que le token est associé au bon individu
+    if(req.params.chemin === "justify" && req.params.token){
+        next()
+    }
+    else{
+        res.sendFile("./authenticate.html", { root: __dirname})
+    }
+})
 
-app.get("/insert", (req, res) => {
-    res.sendFile("./insertion.html", { root: __dirname})
-    // res.end()
+app.get("/api/justify/:token", (req, res) => {
+        res.sendFile("./insertion.html", { root: __dirname})
 })
 
 // Définition des routes de l'API
 // Définir la route pour le traitement du formulaire
 app.post("/api/:chemin", (req, res) => {
+    // Effectuer la vérification du nombre de mots utilisés. Si ce nombre de mots est > 80 000
+    // renvoyer une erreur 403 (Payment Required)
     if(req.params.chemin === "justify"){
         console.log(req.body)
         // Traitement de justification
@@ -94,9 +105,10 @@ app.post("/api/:chemin", (req, res) => {
     }
     if(req.params.chemin === "token"){
         console.log(req.body)
-        // Traitement de justification
+        // Traitement de génération ou de récupération de token
+        // Redirection après génération ou récupération vers l'interface d'insertion
         // res.header("Location",req.url).status(302).send("Texte justifié")
-        res.header("content-type","application/json").status(200).send(req.body)
+        res.header("content-type","application/json").status(200).send(req.body).cookie("token",token)
     }
 })
 
