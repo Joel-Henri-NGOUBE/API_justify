@@ -4,9 +4,6 @@ const express = require("express")
 // Importation du générateur d'ID
 const uuid = require("uuid")
 
-// Importation du gestionnaire de fichiers
-const fs = require("fs")
-
 const app = express()
 
 // Transformer le corps de la requête en json
@@ -17,102 +14,47 @@ app.use(express.urlencoded())
 
 // Définition des chemins de d'authentification 
 
-app.get("/api",(req,res) => {
+// Route de l'hôte de l'API (celui qui l'exploite sur un autre port)
+app.get("/home",(req,res) => {
     res.sendFile("./authenticate.html", { root: __dirname})
-})
-
-app.post("/api", (req, res) => {
-    if(req.body.email){
-        if(fs.existsSync("./database.json")){
-            // Lecture deu fichier de base de données
-            fs.readFile("./database.json",(error,data) => {
-                // Conversion des données en objets manipulables par JavaScript
-                data = JSON.parse(data)
-                if(error){
-                    console.log(error)
-                }
-                else{
-                    let i = 0
-                    data.forEach((user) => {
-                        if(user.email === req.body.email){
-                            i++
-                        }
-                    })
-                    // Si un adresse mail en base correspond à celle entrée, faire une modification du token
-                    if(i){
-                    data.forEach((user) => {
-                        if(user.email === req.body.email){
-                            user.token = uuid.v4()
-                        }
-                    })
-                    }
-                    // Sinon, ajouter un nouvel utilisateur à la base de données
-                    else{
-                        // Génération d'un token associé à un identifiant d'utilisateur
-                        let newData = {
-                            "email" : req.body.email,
-                            "token" : uuid.v4(),
-                            "words" : 0
-                        }
-                        data.push(newData)
-                        console.log(data)
-                    }
-                    // Convertion en chaîne de caractères le contenu du fichier et l'insérer dans la base de données
-                    fs.writeFile("./database.json", JSON.stringify(data), (error) => {
-                        console.log(error)
-                    })
-                }
-            })
-        }
-        
-        // Redirection vers la page d'insertion
-        res.header("Location","/insert").status(302)
-        res.end()
-    }
-    else{
-        // else
-        console.log("Connectez-vous")
-        res.header("Location","/").status(302)
-        res.end()
-    }
-})
-
-// Implémentation du middleware de vérification de token
-app.use((req,res,next) => {
-    // Potentiellement vérifier que le token est associé au bon individu
-    if(req.params.chemin === "justify" && req.params.token){
-        next()
-    }
-    else{
-        res.sendFile("./authenticate.html", { root: __dirname})
-    }
-})
-
-app.get("/api/justify/:token", (req, res) => {
-        res.sendFile("./insertion.html", { root: __dirname})
 })
 
 // Définition des routes de l'API
 // Définir la route pour le traitement du formulaire
-app.post("/api/:chemin", (req, res) => {
+app.post("/api/justify/:token", (req, res) => {
     // Effectuer la vérification du nombre de mots utilisés. Si ce nombre de mots est > 80 000
-    // renvoyer une erreur 403 (Payment Required)
-    if(req.params.chemin === "justify"){
+    // renvoyer une erreur 402 (Payment Required)
+    "SELECT * FROM users WHERE token = :token avec :token valant req.params.token"
+    if("requête if requête.words + text.words < 80 000"){
         console.log(req.body)
+        "Faire justify sur req.body.text et le rendre dans le contenu"
         // Traitement de justification
         // res.header("Location",req.url).status(302).send("Texte justifié")
         res.header("content-type","text/plain").status(200).send(req.body.text)
+        " else {"
+        "res.status(402).end()"
     }
-    if(req.params.chemin === "token"){
-        console.log(req.body)
-        // Traitement de génération ou de récupération de token
-        // Redirection après génération ou récupération vers l'interface d'insertion
-        // res.header("Location",req.url).status(302).send("Texte justifié")
-        res.header("content-type","application/json").status(200).send(req.body).cookie("token",token)
+    else{
+        "res.status(403).end()"
     }
+
+    // }
 })
 
+app.post("/api/token", (req, res) => {
+    // Si tu es fini vérifier que l'email est acceptable
+            "SELECT * FROM users WHERE email = :email"
+            "Oui: renvoyer {email: :email,token: :token, words: :words}" 
+            // Traitement de génération ou de récupération de token
+            "Non: INSERT INTO users(email,token,words) VALUES(:email,:token,0) renvoyer {email: :email,token: :token, words: 0}"
+        console.log(req.body)
+        res.header("content-type","application/json").send(req.body)//.cookie("token",token)
+})
 
+async () => {
+    await Date.time() === "00:00:00" 
+    "UPDATE users SET words = 0 WHERE "
+}
 // Engager l'écoute des requêtes/ réponses faites au serveur
 app.listen(2500,() => {
     console.log("Initiation de l'écoute sur le port 2500")
