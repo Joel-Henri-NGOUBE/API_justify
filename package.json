@@ -1,6 +1,8 @@
 {
   "dependencies": {
     "express": "^4.18.2",
+    "express-myconnection": "^1.0.4",
+    "mysql": "^2.18.1",
     "uuid": "^9.0.1"
   }
 }
