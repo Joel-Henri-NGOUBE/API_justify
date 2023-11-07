@@ -6,10 +6,11 @@
     <title>Document</title>
 </head>
 <body>
-    <form action="/api/token" method="post">
+    <form action="/api/token" method="post" onsubmit="preventDefault();"</form>}>
         <label for="email">Email</label>
         <input type="text" name="email" id="email" placeholder="foo@bar.com">
         <input type="submit" value="Send">
     </form>
 </body>
+<script src="./script.js"></script>
 </html>

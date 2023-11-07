@@ -56,26 +56,26 @@ app.post("/api/justify/:token", (req, res) => {
             console.log(error)
         }
         else{
-        connection.query("SELECT * FROM users WHERE token = :token", [{":token": req.params.token}], (error,result) => {
+        connection.query("SELECT * FROM users WHERE token = ?", [req.params.token], (error,result) => {
             if(error){
                 console.log(error)
             }
             else{
                 // "SELECT * FROM users WHERE token = :token avec :token valant req.params.token"
-                if(result){
-                    if(parseInt(result.words) + parseInt(req.body.text.length) < 80000){ /*"if requête.words + text.words < 80 000"*/
+                if(result.length !== 0){
+                    if(parseInt(result[0].words) + parseInt(justify(req.body.text)[1]) < 80000){ /*"if requête.words + text.words < 80 000"*/
                         // console.log(req.body)
-                        "Faire justify sur req.body.text et le rendre dans le contenu"
+                        // "Faire justify sur req.body.text et le rendre dans le contenu"
                         // Traitement de justification
                         // res.header("Location",req.url).status(302).send("Texte justifié")
-                        res.header("content-type","text/plain").status(200).send(req.body.text)
+                        res.header("content-type","text/plain").status(200).send(justify(req.body.text)[0])
                     }
                     else{
                         res.status(402).end()
                     }
                 }
                 else{
-                    res.status(403).end()
+                    res.status(404).end()
                 }
             }
         })
@@ -91,46 +91,43 @@ app.post("/api/token", (req, res) => {
                     console.log(error)
                 }
                 else{
-                connection.query("SELECT * FROM users WHERE email = :email", [{"email": req.params.email}], (error,result) => {
+                connection.query("SELECT * FROM users WHERE email = ?", [req.body.email], (error,result) => {
                     if(error){
                         console.log(error)
                     }
                     else{
+                        console.log(result)
                         // "SELECT * FROM users WHERE token = :token avec :token valant req.params.token"
-                        if(result){
-                            data = {
-                                email: result.email,
-                                token: result.token,
-                                words: result.words,
-                            }
+                        if(result.length !== 0){
+                        // console.log(result[0].email)
+                            data = '{"email": "'+result[0].email+'","token": "'+result[0].token+'","words": "'+result[0].words+'"}'
                             console.log(data)
-                            data = JSON.stringify(data)
-                            res.header("content-type","application/json").send(req.body)
+                            res.header("content-type","application/json").send(data)
                         }
                         else{
-                            let continuing = true
-                            do{
+                            // let continuing = true
+                            // do{
                                 let token = uuid.v4()
-                                continuing = connection.query("SELECT * FROM users WHERE token = :token", [{"token": token}], (error,result) => {
-                                if(result){
-                                    return true
+                            //     connection.query("SELECT * FROM users WHERE token = ?", [token], (error,result,continuing) => {
+                            //     console.log(continuing)
+                            //     if(result.length !== 0){
+                            //         continuing = true
+                            //     }
+                            //     else{
+                            //         continuing = false
+                            //     }
+                            //     })
+                            // }while(continuing)
+                            connection.query("INSERT INTO users(email,token,words) VALUES(?,?,0)", [req.body.email,token], (error,result) => {
+                                if(error){
+                                    console.log(error)
                                 }
                                 else{
-                                    return false
+                                    data = '{"email": "'+req.body.email+'","token": "'+token+'","words": "'+0+'"}'
+                                    res.header("content-type","application/json").send(data)
                                 }
-                                })
-                            }while(continuing)
-                            connection.query("INSERT INTO users(email,token,words) VALUES(:email,:token,0)", [{"email": req.params.email, "token": token}], (error,result) => {
-                                data = {
-                                    email: req.body.email,
-                                    token: token,
-                                    words: 0,
-                                }
-                                console.log(data)
-                                data = JSON.stringify(data)
-                                res.header("content-type","application/json").send(req.body)
                             })
-                            res.status(403).end()
+                            // res.status(403).end()
                         }
                     }
                 })
