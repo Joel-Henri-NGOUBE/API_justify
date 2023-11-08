@@ -41,6 +41,10 @@ app.use(express.json())
 // Encoder l'url
 app.use(express.urlencoded())
 
+
+app.use('/public', express.static(__dirname + '/public'))
+// app.use(express.static('public'))
+
 // Définition des chemins de d'authentification 
 
 // Route de l'hôte de l'API (celui qui l'exploite sur un autre port)
@@ -63,7 +67,12 @@ app.post("/api/justify/:token", (req, res) => {
             else{
                 // "SELECT * FROM users WHERE token = :token avec :token valant req.params.token"
                 if(result.length !== 0){
-                    if(parseInt(result[0].words) + parseInt(justify(req.body.text)[1]) < 80000){ /*"if requête.words + text.words < 80 000"*/
+                    let a = parseInt(result[0].words) + parseInt(justify(req.body.text)[1])
+                    if(a < 80000){ /*"if requête.words + text.words < 80 000"*/
+                        connection.query("UPDATE users SET words = ? WHERE token = ?", [a,req.params.token], (error,result) => {
+                        if(error){
+                            console.log(error)
+                        }})
                         // console.log(req.body)
                         // "Faire justify sur req.body.text et le rendre dans le contenu"
                         // Traitement de justification
@@ -96,7 +105,7 @@ app.post("/api/token", (req, res) => {
                         console.log(error)
                     }
                     else{
-                        console.log(result)
+                        console.log(req.body)
                         // "SELECT * FROM users WHERE token = :token avec :token valant req.params.token"
                         if(result.length !== 0){
                         // console.log(result[0].email)
@@ -141,6 +150,8 @@ app.post("/api/token", (req, res) => {
 //     await Date.time() === "00:00:00" 
 //     "UPDATE users SET words = 0 WHERE "
 // }
+
+// app.use(express.static('public'))
 
 // Engager l'écoute des requêtes/ réponses faites au serveur
 app.listen(2500,() => {
