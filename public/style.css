@@ -1,0 +1,32 @@
+body{
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color:  #5cddf3
+    
+}
+.email{
+    display: flex;
+    height: 25px;
+    width: 250px;
+    padding-left: 10px;
+    border-radius: 15px;
+    border: 1.5px black solid;
+    margin: 10px
+}
+form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.submit{
+    border: none;
+    height: 30px;
+    color: white;
+    background-color: black;
+    border-radius: 15px;
+}

@@ -53,8 +53,8 @@ function createForm(){
     form.appendChild(textArea)
     inputSubmit = document.createElement("input")
     inputSubmit.setAttribute("type","submit")
-    send = document.createTextNode("Send")
-    inputSubmit.appendChild(send)
+    inputSubmit.setAttribute("value","Send")
+    inputSubmit.setAttribute("class","submit")
     form.appendChild(inputSubmit)
     document.querySelector("body").appendChild(form)
 }   
