@@ -40,7 +40,7 @@ app.use('/public', express.static(__dirname + '/public'))
 
 // Route de test de l'API
 app.get("/home",(req,res) => {
-    res.sendFile("./authenticate.html", { root: __dirname})
+    res.sendFile("./Test/authenticate.html", { root: __dirname})
 })
 
 // Définition des routes de l'API
