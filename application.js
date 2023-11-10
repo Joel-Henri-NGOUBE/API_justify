@@ -9,21 +9,21 @@ const justify = require("./justification.js")
 // Importation de l'établisseu de connxion avec la base de données
 const connection = require("express-myconnection")
 
-// const connectOptions = {
-//     host : "viaduct.proxy.rlwy.net",
-//     user : "root",
-//     password : "52a3BeH2E166-BfCFD4GCE1Ef4Ge1fGG",
-//     port : 27064,
-//     database : "railway",
-// }
-
 const connectOptions = {
-    host : "localhost",
+    host : "viaduct.proxy.rlwy.net",
     user : "root",
-    password : "",
-    port : 3306,
-    database : "justify",
+    password : "52a3BeH2E166-BfCFD4GCE1Ef4Ge1fGG",
+    port : 27064,
+    database : "railway",
 }
+
+// const connectOptions = {
+//     host : "localhost",
+//     user : "root",
+//     password : "",
+//     port : 3306,
+//     database : "justify",
+// }
 
 // Importation du générateur d'ID
 const uuid = require("uuid")
@@ -47,7 +47,7 @@ app.use('/public', express.static(__dirname + '/public'))
 // Définition des chemins de d'authentification 
 
 // Route de test de l'API
-app.get("/home",(req,res) => {
+app.get("/",(req,res) => {
     res.sendFile("./Test/authenticate.html", { root: __dirname})
 })
 
