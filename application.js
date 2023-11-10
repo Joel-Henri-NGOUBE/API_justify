@@ -9,12 +9,20 @@ const justify = require("./justification.js")
 // Importation de l'établisseu de connxion avec la base de données
 const connection = require("express-myconnection")
 
+// const connectOptions = {
+//     host : "viaduct.proxy.rlwy.net",
+//     user : "root",
+//     password : "52a3BeH2E166-BfCFD4GCE1Ef4Ge1fGG",
+//     port : 27064,
+//     database : "railway",
+// }
+
 const connectOptions = {
     host : "localhost",
     user : "root",
     password : "",
     port : 3306,
-    database : "justify"
+    database : "justify",
 }
 
 // Importation du générateur d'ID
@@ -128,6 +136,6 @@ app.post("/api/token", (req, res) => {
 // }
 
 // Engager l'écoute des requêtes/ réponses faites au serveur
-app.listen(2500,() => {
-    console.log("Initiation de l'écoute sur le port 2500")
+app.listen(8000,() => {
+    console.log("Initiation de l'écoute sur le port 8000")
 })
