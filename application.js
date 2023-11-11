@@ -9,21 +9,14 @@ const justify = require("./justification.js")
 // Importation de l'établisseu de connxion avec la base de données
 const connection = require("express-myconnection")
 
-const connectOptions = {
-    host : "viaduct.proxy.rlwy.net",
-    user : "root",
-    password : "52a3BeH2E166-BfCFD4GCE1Ef4Ge1fGG",
-    port : 27064,
-    database : "railway",
-}
 
-// const connectOptions = {
-//     host : "localhost",
-//     user : "root",
-//     password : "",
-//     port : 3306,
-//     database : "justify",
-// }
+const connectOptions = {
+    host : "localhost",
+    user : "root",
+    password : "",
+    port : 3306,
+    database : "justify",
+}
 
 // Importation du générateur d'ID
 const uuid = require("uuid")
@@ -130,10 +123,6 @@ app.post("/api/token", (req, res) => {
             
 })
 
-// async () => {
-//     await Date.time() === "00:00:00" 
-//     "UPDATE users SET words = 0 WHERE "
-// }
 
 // Engager l'écoute des requêtes/ réponses faites au serveur
 app.listen(8000,() => {
